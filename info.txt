@@ -1,0 +1,14 @@
+https://twitter.com/YoJimbo0321/status/1314267305539325953
+https://twitter.com/starrrsky/status/1313995936838770688
+
+I should make this.
+
+The program has a "Record" mode, and a "Play" mode.
+
+In "Record" mode, it records your inputs. 
+The inputs can be made while alt+tabbed into a fighting game.
+After the combo, you tab out and click "Stop" in the program.
+This saves the combo, you can name it.
+
+In "Play" mode, you select a saved combo.
+It replays the combo in DDR-style.
