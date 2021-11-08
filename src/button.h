@@ -42,6 +42,11 @@ typedef struct {
     int stack_count;
 } Gui;
 
+Button_Style default_style = {
+    {255, 255, 255, 255},
+    {50, 50, 50, 255}
+};
+
 // Call once in your program.
 void gui_init(Gui *g, TTF_Font *font)
 {

@@ -1,3 +1,4 @@
+
 void draw_text(SDL_Renderer *renderer, int x, int y, char *string, TTF_Font *font, SDL_Color font_color) {
     SDL_Surface *surface = TTF_RenderText_Blended(font, string, font_color);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);

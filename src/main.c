@@ -161,7 +161,11 @@ void render(SDL_Renderer *renderer, State *state)
             Press *p = &state->recording[i];
             if (p->should_draw)
             {
-                draw_circle(renderer, left_padding + (get_button_type(p->button)*distance_between_lanes), p->distance + top_padding, press_radius);
+                int center_x = left_padding + (get_button_type(p->button)*distance_between_lanes);
+                int center_y = p->distance + top_padding;
+                int radius = press_radius;
+
+                draw_circle(renderer, center_x, center_y, radius);
             }
         }
     }
@@ -176,6 +180,43 @@ void render(SDL_Renderer *renderer, State *state)
     draw_all_buttons(renderer, &state->gui);
 
     SDL_RenderPresent(renderer);
+}
+
+// TODO(bkaylor): Should load and save use the Windows api instead of fread/fwrite?
+void load(State *state)
+{
+    // Reads combo.txt into state->recording.
+    printf("\n\nLOADING COMBO\n");
+
+    FILE *file = fopen("combo.txt", "rb");
+
+    int size;
+
+    fseek(file, 0, SEEK_END);
+    size = ftell(file);
+
+    fseek(file, 0, SEEK_SET);
+
+    int presses_read = fread(state->recording, sizeof(Press), size / sizeof(Press), file);
+    state->recording_index = presses_read;
+
+    printf("\nLOADED %d PRESSES\n\n", presses_read);
+
+    fclose(file);
+}
+
+void save(State *state)
+{
+    // Writes state->recording into combo.txt.
+    printf("\n\nWRITING COMBO\n");
+
+    FILE *file = fopen("combo.txt", "wb");
+
+    int presses_written = fwrite(state->recording, sizeof(Press), state->recording_index, file);
+
+    printf("\nWROTE %d PRESSES\n\n", presses_written);
+
+    fclose(file);
 }
 
 void update(State *state) 
@@ -204,40 +245,58 @@ void update(State *state)
         }
         else
         {
+            // TODO(bkaylor): Cleanup- bad way to change style. Need some push/pop style control.
+            g->style.color = (SDL_Color) {136, 0, 21};
+
             if (do_button(g, "Stop"))
             {
                 printf("END RECORDING\n");
                 state->record = false;
             }
+
+            // TODO(bkaylor): Cleanup- bad way to change style. Need some push/pop style control.
+            g->style.color = default_style.color;
+        }
+
+        // TODO(bkaylor): Cleanup- bad way to change style. Need some push/pop style control.
+        if (state->playing)
+        {
+            g->style.color = (SDL_Color) {34, 177, 76};
         }
 
         if (do_button(g, "Replay"))
         {
-            printf("Starting a replay ...\n");
+            printf("\n\nPLAYBACK\n");
             state->playing = true;
             state->starting_time = SDL_GetTicks();
         }
 
+        // TODO(bkaylor): Cleanup- bad way to change style. Need some push/pop style control.
+        if (state->playing)
+        {
+            g->style.color = default_style.color;
+        }
+
         if (do_button(g, "Print"))
         {
-            printf("\n\nPLAYBACK\n");
+            printf("\n\nPRINTING\n");
             for (int i = 0; i < state->recording_index; i += 1)
             {
                 char *button_string = get_button_string(get_button_type(state->recording[i].button));
                 printf("%s at %d\n", button_string, state->recording[i].time);
             }
-            printf("END PLAYBACK\n");
+            printf("END PRINT\n");
             state->play = false;
         }
 
         if (do_button(g, "Load"))
         {
-            // TODO(bkaylor): Read from a file into state->recording.
+            load(state);
         }
 
         if (do_button(g, "Save"))
         {
-            // TODO(bkaylor): Write state->recording to a file.
+            save(state);
         }
     }
 
@@ -249,32 +308,13 @@ void update(State *state)
 
         if (state->current_time_in_recording > state->recording[state->recording_index-1].time)
         {
-            printf("Play ended.\n");
+            printf("END PLAYBACK\n");
             state->playing = false;
         }
     }
 
     return;
 }
-
-/*
-void load(State *state)
-{
-    FILE *file = fopen("combo.txt", "r");
-
-    char *data;
-    int size;
-
-    fseek(file, 0, seek_end);
-    size = ftell(file);
-
-    data = malloc(size+1);
-    fread(data, 1, size, file);
-    data[size] = 0;
-
-    fclose(file);
-}
-*/
 
 void get_input(State *state)
 {

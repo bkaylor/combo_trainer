@@ -1,0 +1,39 @@
+
+Save button
+    Save button should resave a combo if it was originally loaded from a file. 
+    If this is a newly recorded combo, prompt for a name and save.
+
+Load button
+    When the program starts, load all the filenames in the `combos` folder.
+    "Load button" opens a list of all those combos. Click one to set it as the active combo.
+
+Record button visuals
+    The record button should turn red and slowly strobe while recording.
+
+Replay button visuals
+    The replay button should turn green and slowly strobe while playing.
+
+Target row visuals
+    The target row should not just be circles- it should be a circle with the button symbol in the middle.
+    Target row symbols should be dark grey, but flash white when the button was pressed properly during a replay.
+    Additionally, target row symbols should flash white whenever the button is pressed.
+        i.e. even if no combo is loaded, user can spam controller buttons and see visual response immediately.
+
+Replay symbols visuals
+    Replay symbols are currently just circles. They should be a symbol representing the button. Matching colors!
+
+Direction handling
+    Currently, it works only for hitbox because directions are a button press.
+    How does this extend to stick controllers? Should I already be adding diagonal arrows? That'd turn 4 arrows into 8.
+
+Controller support
+    Hitbox only because that's all I have.
+
+Button press duration handling.
+    Currently only button presses are recorded- the PRESS, not the key up or anything related to duration. Is that ok?
+
+Audio clicks
+    Play audio clicks so user can learn the rhythm of a recorded combo
+
+Timeline
+    Draw a timeline of the combo, so players can see a preview of what it looks like before replaying it.
